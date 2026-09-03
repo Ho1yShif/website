@@ -81,40 +81,14 @@ projects:
             region: oregon
             postgresMajorVersion: "17"
 
-        envVarGroups:
-          - name: sure-secrets
-            envVars:
-              - key: SECRET_KEY_BASE
-                generateValue: true
-              - key: CONVERTKIT_API_KEY
-                sync: false
-              - key: CONVERTKIT_API_SECRET
-                sync: false
-              - key: CONVERTKIT_FORM_ID
-                sync: false
-              - key: CONVERTKIT_TAG_ID
-                sync: false
-              - key: SYNTH_API_KEY
-                sync: false
-              - key: FRED_API_KEY
-                sync: false
-              - key: BANNERBEAR_API_KEY
-                sync: false
-              - key: PLAID_CLIENT_ID
-                sync: false
-              - key: PLAID_SECRET
-                sync: false
-              - key: PLAID_ENVIRONMENT
-                sync: false
-              - key: OPENAI_API_KEY
-                sync: false
-              - key: SEOBOT_API_KEY
-                sync: false
-              - key: SENTRY_DSN
-                sync: false
-              - key: POSTHOG_KEY
-                sync: false
-              - key: DISCORD_URL
-                sync: false
-              - key: SURE_ROADMAP_URL
-                sync: false
+# The sure-secrets environment group is intentionally not defined here.
+# A group defined in a Blueprint has its values overwritten on every sync, so
+# create it in the Dashboard before applying this Blueprint:
+#
+#   SECRET_KEY_BASE        (use the Dashboard's generate button)
+#   CONVERTKIT_API_KEY, CONVERTKIT_FORM_ID, CONVERTKIT_TAG_ID
+#   FRED_API_KEY
+#   PLAID_CLIENT_ID, PLAID_SECRET, PLAID_ENVIRONMENT
+#   OPENAI_API_KEY, SEOBOT_API_KEY
+#   SENTRY_DSN, POSTHOG_KEY
+#   DISCORD_URL, SURE_ROADMAP_URL
