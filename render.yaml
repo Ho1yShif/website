@@ -1,0 +1,120 @@
+projects:
+  - name: sure
+    environments:
+      - name: production
+
+        services:
+          - type: web
+            name: sure-website
+            runtime: docker
+            plan: starter
+            region: oregon
+            dockerfilePath: ./Dockerfile
+            healthCheckPath: /up
+            preDeployCommand: ./bin/rails db:prepare
+            autoDeployTrigger: commit
+            envVars:
+              - key: RAILS_MAX_THREADS
+                value: "3"
+              - key: WEB_CONCURRENCY
+                value: "2"
+              - key: DATABASE_URL
+                fromDatabase:
+                  name: sure-db
+                  property: connectionString
+              - key: REDIS_CACHE_URL
+                fromService:
+                  name: sure-cache
+                  type: keyvalue
+                  property: connectionString
+              - key: REDIS_QUEUE_URL
+                fromService:
+                  name: sure-queue
+                  type: keyvalue
+                  property: connectionString
+              - fromGroup: sure-secrets
+
+          - type: worker
+            name: sure-worker
+            runtime: docker
+            plan: starter
+            region: oregon
+            dockerfilePath: ./Dockerfile
+            dockerCommand: bundle exec sidekiq
+            autoDeployTrigger: commit
+            envVars:
+              - key: RAILS_MAX_THREADS
+                value: "3"
+              - key: DATABASE_URL
+                fromDatabase:
+                  name: sure-db
+                  property: connectionString
+              - key: REDIS_CACHE_URL
+                fromService:
+                  name: sure-cache
+                  type: keyvalue
+                  property: connectionString
+              - key: REDIS_QUEUE_URL
+                fromService:
+                  name: sure-queue
+                  type: keyvalue
+                  property: connectionString
+              - fromGroup: sure-secrets
+
+          - type: keyvalue
+            name: sure-cache
+            plan: starter
+            region: oregon
+            maxmemoryPolicy: allkeys-lru
+            ipAllowList: []
+
+          - type: keyvalue
+            name: sure-queue
+            plan: starter
+            region: oregon
+            maxmemoryPolicy: noeviction
+            ipAllowList: []
+
+        databases:
+          - name: sure-db
+            plan: basic-256mb
+            region: oregon
+            postgresMajorVersion: "17"
+
+        envVarGroups:
+          - name: sure-secrets
+            envVars:
+              - key: SECRET_KEY_BASE
+                generateValue: true
+              - key: CONVERTKIT_API_KEY
+                sync: false
+              - key: CONVERTKIT_API_SECRET
+                sync: false
+              - key: CONVERTKIT_FORM_ID
+                sync: false
+              - key: CONVERTKIT_TAG_ID
+                sync: false
+              - key: SYNTH_API_KEY
+                sync: false
+              - key: FRED_API_KEY
+                sync: false
+              - key: BANNERBEAR_API_KEY
+                sync: false
+              - key: PLAID_CLIENT_ID
+                sync: false
+              - key: PLAID_SECRET
+                sync: false
+              - key: PLAID_ENVIRONMENT
+                sync: false
+              - key: OPENAI_API_KEY
+                sync: false
+              - key: SEOBOT_API_KEY
+                sync: false
+              - key: SENTRY_DSN
+                sync: false
+              - key: POSTHOG_KEY
+                sync: false
+              - key: DISCORD_URL
+                sync: false
+              - key: SURE_ROADMAP_URL
+                sync: false
