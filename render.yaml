@@ -32,7 +32,7 @@ projects:
                   name: sure-queue
                   type: keyvalue
                   property: connectionString
-              - fromGroup: sure-secrets
+              - fromGroup: sure-website-secrets
 
           - type: worker
             name: sure-worker
@@ -59,7 +59,7 @@ projects:
                   name: sure-queue
                   type: keyvalue
                   property: connectionString
-              - fromGroup: sure-secrets
+              - fromGroup: sure-website-secrets
 
           - type: keyvalue
             name: sure-cache
@@ -80,8 +80,9 @@ projects:
             plan: basic-256mb
             region: oregon
             postgresMajorVersion: "17"
+            ipAllowList: []
 
-# The sure-secrets environment group is intentionally not defined here.
+# The sure-website-secrets environment group is intentionally not defined here.
 # A group defined in a Blueprint has its values overwritten on every sync, so
 # create it in the Dashboard before applying this Blueprint:
 #
